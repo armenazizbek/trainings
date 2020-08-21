@@ -7,6 +7,7 @@ const logger = require('morgan');
 
 
 const transferRouter = require('./routes/transfer');
+const checkBalanceRouter = require('./routes/checkBalance');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/transfer', transferRouter);
+app.use('/check-balance', checkBalanceRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
