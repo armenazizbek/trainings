@@ -10,6 +10,7 @@ const transferRouter = require('./routes/transfer');
 const checkBalanceRouter = require('./routes/checkBalance');
 const burnEthRouter = require('./routes/burnEth');
 const createWalletRouter = require('./routes/createWallet');
+const erc20Transfer = require('./routes/erc20transfer');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/transfer', transferRouter);
 app.use('/check-balance', checkBalanceRouter);
 app.use('/burn-eth', burnEthRouter);
 app.use('/create-wallet', createWalletRouter);
+app.use('/erc20-transfer', erc20Transfer);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
