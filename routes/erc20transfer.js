@@ -6,7 +6,6 @@ const web3 = new Web3('https://rinkeby.infura.io/v3/49e5f58c5d634d7d888e8d6ebd23
 
 router.post('/', async function(req, res) {
     const { address } = req.body;
-
     if(!address) res.json({ error: 'Invalid request params' }, 400);
     const walletAddress = '0x4679df190f435A503558eCD19613D9f89Ae39fA1';
     const privateKey = Buffer.from('141220cc78206bac66c8034d9f0fea401ae96883cc24c97024a7c52c4f4acb0d', 'hex');
@@ -243,30 +242,34 @@ router.post('/', async function(req, res) {
         ];
 
     const contract = new web3.eth.Contract(contractAbi, contractAddress);
-    const data = contract.methods.transferFrom(walletAddress, address, web3.utils.toWei('1', 'ether')).encodeABI();
+    const data = contract.methods.transfer(address, web3.utils.toWei('0.1', 'ether')).encodeABI();
     const gasPrice = await web3.eth.getGasPrice();
 
-    const txObject = {
-        to: contractAddress,
-        gasLimit: web3.utils.toHex(21000),
-        gasPrice: web3.utils.toHex(gasPrice),
-        data: data,
-    };
+    web3.eth.getTransactionCount(walletAddress).then((txCount) => {
+        const txObject = {
+            from: walletAddress,
+            to: contractAddress,
+            gasLimit: web3.utils.toHex(2100000),
+            gasPrice: web3.utils.toHex(gasPrice),
+            data: data,
+            nonce: web3.utils.toHex(txCount),
+            value: '0x0'
+        };
 
-    const tx = new Tx(txObject,{ chain: 'rinkeby' });
-    tx.sign(privateKey);
+        const tx = new Tx(txObject,{ chain: 'rinkeby' });
+        tx.sign(privateKey);
 
-    let serializedTx = "0x" + tx.serialize().toString('hex');
+        let serializedTx = "0x" + tx.serialize().toString('hex');
 
-    web3.eth.sendSignedTransaction(serializedTx).on('transactionHash', function (txHash) {
-        res.json({ txHash }, 200)
-    }).on('receipt', function (receipt) {
-        res.json({ receipt }, 200)
-    }).on('confirmation', function (confirmationNumber, receipt) {
-        res.json({ confirmationNumber }, 200)
-    }).on('error', function (error) {
-        console.log(error, 88888);
-        res.json({ error }, 400)
+        web3.eth.sendSignedTransaction(serializedTx).on('transactionHash', function (txHash) {
+            res.json({ txHash }, 200)
+        }).on('receipt', function (receipt) {
+            res.json({ receipt }, 200)
+        }).on('confirmation', function (confirmationNumber, receipt) {
+            res.json({ confirmationNumber }, 200)
+        }).on('error', function (error) {
+            res.json({ error }, 400)
+        });
     });
 });
 
