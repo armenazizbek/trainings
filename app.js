@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const firebaseInit = require('./config/database');
 
 
 const transferRouter = require('./routes/transfer');
@@ -14,6 +15,7 @@ const erc20Transfer = require('./routes/erc20transfer');
 
 const app = express();
 
+firebaseInit();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

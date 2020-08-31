@@ -11,6 +11,7 @@
     "dotenv": "^8.2.0",
     "ethereumjs-tx": "^2.1.2",
     "express": "~4.16.1",
+    "firebase": "^7.19.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "web3": "^1.2.11"
